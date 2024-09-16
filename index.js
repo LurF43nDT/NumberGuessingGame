@@ -7,6 +7,9 @@ let attempts = 0;
 let guess;
 let running = true;
 
+// Get the video element
+const winVideo = document.getElementById('winVideo');
+
 // Main game loop
 while (running) {
     // Get user's guess
@@ -36,6 +39,14 @@ while (running) {
         else {
             window.alert(`Correct! The answer was ${answer}. It took you ${attempts} attempts.`);
             running = false; // End the game loop
+
+            // Display the video and play it
+            winVideo.style.display = "block"; // Make the video visible
+            winVideo.play().then(() => {
+                console.log('Video playing');
+            }).catch((error) => {
+                console.error('Error playing the video:', error);
+            });
         }
     }
 }
