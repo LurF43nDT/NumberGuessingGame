@@ -4,7 +4,7 @@ const minNum = 1;
 const maxNum = 100;
 const answer = Math.floor(Math.random() * (maxNum - minNum + 1));
 
-let attemps = 0;
+let attempts = 0;
 let guess;
 let running = true;
 
@@ -27,6 +27,9 @@ while(running){
         else if(guess > answer){
             window.alert("TOO HIGH! !TRY AGAIN!")
         }
+        else{
+            window.alert(`CORRECT! The answer was ${answer}. It took you ${attempts} attempts`)
+            running = false;
+        }
     }
-    running = false;
 }
