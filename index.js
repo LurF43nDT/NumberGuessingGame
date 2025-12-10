@@ -1,52 +1,84 @@
-// Define the range and generate a random answer
 const minNum = 1;
 const maxNum = 100;
-const answer = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
 
+const guessForm = document.getElementById("guessForm");
+const guessInput = document.getElementById("guessInput");
+const messageEl = document.getElementById("message");
+const attemptsEl = document.getElementById("attempts");
+const rangeHintEl = document.getElementById("rangeHint");
+const resetBtn = document.getElementById("resetBtn");
+const videoContainer = document.getElementById("videoContainer");
+const winVideo = document.getElementById("winVideo");
+
+let answer = getRandomNumber();
 let attempts = 0;
-let guess;
-let running = true;
+let minHint = minNum;
+let maxHint = maxNum;
 
-// Get the video element
-const winVideo = document.getElementById('winVideo');
-
-// Main game loop
-while (running) {
-    // Get user's guess
-    guess = window.prompt(`Guess a number between ${minNum} and ${maxNum}`);
-    guess = Number(guess);
-
-    // Check if the input is a valid number
-    if (isNaN(guess)) {
-        window.alert("Please enter a valid number!");
-    }
-    // Check if the guess is within the valid range
-    else if (guess < minNum || guess > maxNum) {
-        window.alert(`Please enter a number between ${minNum} and ${maxNum}`);
-    }
-    else {
-        attempts++; // Increment attempt counter
-
-        // Check if the guess is too low
-        if (guess < answer) {
-            window.alert("Too low! Try again.");
-        }
-        // Check if the guess is too high
-        else if (guess > answer) {
-            window.alert("Too high! Try again.");
-        }
-        // Correct guess
-        else {
-            window.alert(`Correct! The answer was ${answer}. It took you ${attempts} attempts.`);
-            running = false; // End the game loop
-
-            // Display the video and play it
-            winVideo.style.display = "block"; // Make the video visible
-            winVideo.play().then(() => {
-                console.log('Video playing');
-            }).catch((error) => {
-                console.error('Error playing the video:', error);
-            });
-        }
-    }
+function getRandomNumber() {
+    return Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
 }
+
+function updateUI(text, intent = "neutral") {
+    messageEl.textContent = text;
+    messageEl.dataset.intent = intent;
+    attemptsEl.textContent = `Attempts: ${attempts}`;
+    rangeHintEl.textContent = `Range: ${minHint} - ${maxHint}`;
+}
+
+function handleGuess(event) {
+    event.preventDefault();
+    const value = Number(guessInput.value.trim());
+
+    if (Number.isNaN(value)) {
+        updateUI("Please enter a valid number.", "warn");
+        return;
+    }
+
+    if (value < minNum || value > maxNum) {
+        updateUI(`Pick between ${minNum} and ${maxNum}.`, "warn");
+        return;
+    }
+
+    attempts += 1;
+
+    if (value === answer) {
+        updateUI(`Correct! The number was ${answer}. Attempts: ${attempts}`, "success");
+        videoContainer.classList.remove("hidden");
+        winVideo.scrollIntoView({ behavior: "smooth", block: "center" });
+        winVideo.play().catch((error) => console.error("Error playing the video:", error));
+        guessInput.disabled = true;
+        guessForm.querySelector("button[type='submit']").disabled = true;
+        return;
+    }
+
+    if (value < answer) {
+        minHint = Math.max(minHint, value + 1);
+        updateUI("Too low! Try a higher number.", "info");
+    } else {
+        maxHint = Math.min(maxHint, value - 1);
+        updateUI("Too high! Try a lower number.", "info");
+    }
+
+    guessInput.value = "";
+    guessInput.focus();
+}
+
+function resetGame() {
+    answer = getRandomNumber();
+    attempts = 0;
+    minHint = minNum;
+    maxHint = maxNum;
+    guessInput.disabled = false;
+    guessForm.querySelector("button[type='submit']").disabled = false;
+    guessInput.value = "";
+    videoContainer.classList.add("hidden");
+    winVideo.pause();
+    winVideo.currentTime = 0;
+    updateUI("New game started. Good luck!");
+    guessInput.focus();
+}
+
+updateUI("Start guessing to get feedback.");
+guessForm.addEventListener("submit", handleGuess);
+resetBtn.addEventListener("click", resetGame);

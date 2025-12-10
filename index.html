@@ -4,12 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Number Guessing Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <video id="winVideo" width="640" height="360" controls style="display:none;">
-        <source src="slått-kattepus.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <main class="app">
+        <section class="card">
+            <div class="card__header">
+                <p class="eyebrow">Mini Game</p>
+                <h1>Guess the Number</h1>
+                <p class="subtitle">Pick a number between 1 and 100. You get hints after every guess.</p>
+            </div>
+
+            <form id="guessForm" class="form" autocomplete="off">
+                <label class="sr-only" for="guessInput">Your guess</label>
+                <input id="guessInput" name="guess" type="number" min="1" max="100" required placeholder="Enter your guess (1-100)" />
+                <button type="submit">Submit Guess</button>
+            </form>
+
+            <div class="feedback">
+                <p id="message">Start guessing to get feedback.</p>
+                <div class="meta">
+                    <span id="attempts">Attempts: 0</span>
+                    <span id="rangeHint">Range: 1 - 100</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="resetBtn" type="button" class="secondary">Restart Game</button>
+            </div>
+
+            <div id="videoContainer" class="video hidden">
+                <video id="winVideo" width="640" height="360" controls>
+                    <source src="slått-kattepus.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+    </main>
 
     <script src="index.js"></script>
 </body>
