@@ -1,5 +1,6 @@
-const minNum = 1;
-const maxNum = 100;
+const VALID_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+const VALID_NUMBERS = ["1", "2", "3", "4", "5", "6", "7", "8"];
+const ANSWER = "F8";
 
 const guessForm = document.getElementById("guessForm");
 const guessInput = document.getElementById("guessInput");
@@ -10,40 +11,31 @@ const resetBtn = document.getElementById("resetBtn");
 const videoContainer = document.getElementById("videoContainer");
 const winVideo = document.getElementById("winVideo");
 
-let answer = getRandomNumber();
 let attempts = 0;
-let minHint = minNum;
-let maxHint = maxNum;
-
-function getRandomNumber() {
-    return Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
-}
 
 function updateUI(text, intent = "neutral") {
     messageEl.textContent = text;
     messageEl.dataset.intent = intent;
     attemptsEl.textContent = `Attempts: ${attempts}`;
-    rangeHintEl.textContent = `Range: ${minHint} - ${maxHint}`;
+    rangeHintEl.textContent = "Valid: A-H followed by 1-8";
 }
 
 function handleGuess(event) {
     event.preventDefault();
-    const value = Number(guessInput.value.trim());
+    const raw = guessInput.value.trim().toUpperCase();
 
-    if (Number.isNaN(value)) {
-        updateUI("Please enter a valid number.", "warn");
+    if (!/^[A-H][1-8]$/.test(raw)) {
+        updateUI("Use a letter A-H followed by a number 1-8 (e.g., F8).", "warn");
         return;
     }
 
-    if (value < minNum || value > maxNum) {
-        updateUI(`Pick between ${minNum} and ${maxNum}.`, "warn");
-        return;
-    }
+    const letter = raw[0];
+    const num = raw[1];
 
     attempts += 1;
 
-    if (value === answer) {
-        updateUI(`Correct! The number was ${answer}. Attempts: ${attempts}`, "success");
+    if (raw === ANSWER) {
+        updateUI(`Correct! The code was ${ANSWER}. Attempts: ${attempts}`, "success");
         videoContainer.classList.remove("hidden");
         winVideo.scrollIntoView({ behavior: "smooth", block: "center" });
         winVideo.play().catch((error) => console.error("Error playing the video:", error));
@@ -52,30 +44,39 @@ function handleGuess(event) {
         return;
     }
 
-    if (value < answer) {
-        minHint = Math.max(minHint, value + 1);
-        updateUI("Too low! Try a higher number.", "info");
-    } else {
-        maxHint = Math.min(maxHint, value - 1);
-        updateUI("Too high! Try a lower number.", "info");
+    const targetLetter = ANSWER[0];
+    const targetNum = ANSWER[1];
+
+    let letterHint = "";
+    if (letter < targetLetter) {
+        letterHint = "Try a later letter.";
+    } else if (letter > targetLetter) {
+        letterHint = "Try an earlier letter.";
     }
+
+    let numberHint = "";
+    if (Number(num) < Number(targetNum)) {
+        numberHint = "Number is higher.";
+    } else if (Number(num) > Number(targetNum)) {
+        numberHint = "Number is lower.";
+    }
+
+    const hint = [letterHint, numberHint].filter(Boolean).join(" ");
+    updateUI(`Not quite. ${hint || "Adjust both letter and number."}`, "info");
 
     guessInput.value = "";
     guessInput.focus();
 }
 
 function resetGame() {
-    answer = getRandomNumber();
     attempts = 0;
-    minHint = minNum;
-    maxHint = maxNum;
     guessInput.disabled = false;
     guessForm.querySelector("button[type='submit']").disabled = false;
     guessInput.value = "";
     videoContainer.classList.add("hidden");
     winVideo.pause();
     winVideo.currentTime = 0;
-    updateUI("New game started. Good luck!");
+    updateUI("New game started. Guess the code (A-H + 1-8).");
     guessInput.focus();
 }
 
