@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Combo Guessing Game</title>
+    <title>Grid Guessing Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,21 +11,19 @@
         <section class="card">
             <div class="card__header">
                 <p class="eyebrow">Mini Game</p>
-                <h1>Guess the Secret Code</h1>
-                <p class="subtitle">Find the right combo: a letter A-H followed by a number 1-8.</p>
+                <h1>Find the Hidden Cell</h1>
+                <p class="subtitle">Click a cell on the 8x8 grid (A-H rows, 1-8 columns) to find the secret spot.</p>
             </div>
 
-            <form id="guessForm" class="form" autocomplete="off">
-                <label class="sr-only" for="guessInput">Your guess</label>
-                <input id="guessInput" name="guess" type="text" required placeholder="Enter a code like B4" maxlength="2" />
-                <button type="submit">Submit Guess</button>
-            </form>
+            <div class="grid-wrapper">
+                <div id="grid" class="grid" aria-label="Guessing grid"></div>
+            </div>
 
             <div class="feedback">
                 <p id="message">Start guessing to get feedback.</p>
                 <div class="meta">
                     <span id="attempts">Attempts: 0</span>
-                    <span id="rangeHint">Valid: A-H + 1-8</span>
+                    <span id="rangeHint">Valid: A-H followed by 1-8</span>
                 </div>
             </div>
 

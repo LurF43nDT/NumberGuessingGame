@@ -114,6 +114,55 @@ body {
     transform: translateY(0);
 }
 
+.grid-wrapper {
+    margin: 20px 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+}
+
+.cell {
+    position: relative;
+    padding: 16px 0;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+    text-align: center;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.cell:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.cell:active {
+    transform: translateY(0);
+}
+
+.cell.hit {
+    background: rgba(41, 211, 193, 0.14);
+    border-color: var(--accent-2);
+    color: var(--accent-2);
+}
+
+.cell.miss {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: #ff6b6b55;
+    color: #ffb3b3;
+}
+
+.cell.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 .feedback {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border);
